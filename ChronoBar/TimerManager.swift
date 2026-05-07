@@ -4,6 +4,7 @@ import Combine
 class TimerManager: ObservableObject {
     @Published var isActive = false
     @Published var elapsedTimeString = "00:00:00"
+    @Published var currentSessionElapsed: TimeInterval = 0
 
     private var startTime: Date?
     private var timer: Timer?
@@ -43,12 +44,14 @@ class TimerManager: ObservableObject {
 
         isActive = false
         startTime = nil
+        currentSessionElapsed = 0
         elapsedTimeString = "00:00:00"
     }
 
     private func tick() {
         guard let start = startTime else { return }
         let elapsed = Date().timeIntervalSince(start)
+        currentSessionElapsed = elapsed
         elapsedTimeString = formatDuration(elapsed)
     }
 

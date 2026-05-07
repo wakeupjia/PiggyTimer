@@ -20,17 +20,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             .sink { [weak self] _ in self?.updateButton() }
             .store(in: &cancellables)
 
-        timerManager.$elapsedTimeString
+        timerManager.$currentSessionElapsed
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.updateButton() }
             .store(in: &cancellables)
     }
 
     private func updateButton() {
+        let todayTotal = dataManager.todayTotal
+        let displayTime: TimeInterval
+        statusItem.button?.image = nil
         if timerManager.isActive {
-            statusItem.button?.title = "● \(timerManager.elapsedTimeString)"
+            displayTime = todayTotal + timerManager.currentSessionElapsed
+            statusItem.button?.title = "🐱 \(formatTime(displayTime))"
         } else {
-            statusItem.button?.title = "○"
+            displayTime = todayTotal
+            statusItem.button?.title = "🐷 \(formatTime(displayTime))"
         }
     }
 
@@ -40,14 +45,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.removeAllItems()
         dataManager.load()
 
-        let todayStr = formatTotal(dataManager.todayTotal)
-        let allTimeStr = formatTotal(dataManager.allTimeTotal)
-
-        let todayItem = NSMenuItem(title: "Today: \(todayStr)", action: nil, keyEquivalent: "")
-        menu.addItem(todayItem)
-
-        let allTimeItem = NSMenuItem(title: "All-time: \(allTimeStr)", action: nil, keyEquivalent: "")
-        menu.addItem(allTimeItem)
+        let allTimeStr = formatTime(dataManager.allTimeTotal)
+        menu.addItem(NSMenuItem(title: "All-time: \(allTimeStr)", action: nil, keyEquivalent: ""))
 
         menu.addItem(NSMenuItem.separator())
 
@@ -82,13 +81,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSApplication.shared.terminate(nil)
     }
 
-    private func formatTotal(_ seconds: TimeInterval) -> String {
+    // MARK: - Formatting
+
+    private func formatTime(_ seconds: TimeInterval) -> String {
         let h = Int(seconds) / 3600
         let m = Int(seconds) % 3600 / 60
-        if h > 0 {
-            return "\(h)h \(m)m"
-        } else {
-            return "\(m)m"
-        }
+        let s = Int(seconds) % 60
+        return "\(h)h \(m)m \(s)s"
     }
 }
