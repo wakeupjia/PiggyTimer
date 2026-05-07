@@ -1,6 +1,6 @@
 # PiggyTimer
 
-A minimal macOS menu bar study timer.
+A minimal macOS menu bar study timer. 灵感来自"有效学习时间"这个概念。市面上计时器都太复杂了，我只需要一个东西：一眼看到今天学了多少。
 
 🐷 when idle, 🐱 when studying. Your today's total shows right in the menu bar.
 
@@ -9,7 +9,6 @@ A minimal macOS menu bar study timer.
 ## Features
 
 - One-click start/stop from the menu bar
-- 感来自"有效学习时间"这个概念。市面上计时器都太复杂了，我只需要一个东西：一眼看到今天学了多少。
 
 ## Usage
 
