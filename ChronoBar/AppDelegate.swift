@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 
-class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     let timerManager = TimerManager()
     let dataManager = DataManager.shared
@@ -9,9 +9,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        let menu = NSMenu()
-        menu.delegate = self
-        statusItem.menu = menu
+        statusItem.button?.target = self
+        statusItem.button?.action = #selector(statusBarClicked)
+        statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
         updateButton()
 
@@ -26,32 +26,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             .store(in: &cancellables)
     }
 
-    private func updateButton() {
-        let todayTotal = dataManager.todayTotal
-        let displayTime: TimeInterval
-        statusItem.button?.image = nil
-        if timerManager.isActive {
-            displayTime = todayTotal + timerManager.currentSessionElapsed
-            statusItem.button?.title = "🐱 \(formatTime(displayTime))"
+    @objc private func statusBarClicked() {
+        if NSApp.currentEvent?.type == .rightMouseUp {
+            showContextMenu()
         } else {
-            displayTime = todayTotal
-            statusItem.button?.title = "🐷 \(formatTime(displayTime))"
+            timerManager.toggle()
         }
     }
 
-    // MARK: - NSMenuDelegate
-
-    func menuNeedsUpdate(_ menu: NSMenu) {
-        menu.removeAllItems()
+    private func showContextMenu() {
         dataManager.load()
+        let menu = NSMenu()
 
         let allTimeStr = formatTime(dataManager.allTimeTotal)
         menu.addItem(NSMenuItem(title: "All-time: \(allTimeStr)", action: nil, keyEquivalent: ""))
-
-        menu.addItem(NSMenuItem.separator())
-
-        let toggleTitle = timerManager.isActive ? "Stop Timer" : "Start Timer"
-        menu.addItem(NSMenuItem(title: toggleTitle, action: #selector(toggleTimer), keyEquivalent: "s"))
 
         menu.addItem(NSMenuItem.separator())
 
@@ -61,13 +49,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(NSMenuItem.separator())
 
         menu.addItem(NSMenuItem(title: "Quit ChronoBar", action: #selector(quit), keyEquivalent: "q"))
+
+        statusItem.menu = menu
+        statusItem.button?.performClick(nil)
+        statusItem.menu = nil
+    }
+
+    private func updateButton() {
+        let todayTotal = dataManager.todayTotal
+        let displayTime: TimeInterval
+        statusItem.button?.image = nil
+        if timerManager.isActive {
+            displayTime = todayTotal + timerManager.currentSessionElapsed
+            statusItem.button?.title = "🐱 \(formatTime(displayTime))"
+        } else {
+            displayTime = todayTotal
+            statusItem.button?.title = "🐷 \(formatTimeShort(displayTime))"
+        }
     }
 
     // MARK: - Actions
-
-    @objc private func toggleTimer() {
-        timerManager.toggle()
-    }
 
     @objc private func openHistory() {
         dataManager.openHistoryFile()
@@ -88,5 +89,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let m = Int(seconds) % 3600 / 60
         let s = Int(seconds) % 60
         return "\(h)h \(m)m \(s)s"
+    }
+
+    private func formatTimeShort(_ seconds: TimeInterval) -> String {
+        let h = Int(seconds) / 3600
+        let m = Int(seconds) % 3600 / 60
+        return "\(h)h \(m)m"
     }
 }
