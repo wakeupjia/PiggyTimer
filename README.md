@@ -8,13 +8,21 @@ A minimal macOS menu bar study timer.
 ## Features
 
 - One-click start/stop from the menu bar
+- Stats window with a 30-day study time curve, totals, and editable history
+- Timer automatically stops when the Mac goes to sleep (lid closed)
 
 ## Usage
 
 1. Open PiggyTimer
-2. Click the 🐱/🐷 icon in the menu bar
-3. **Start Timer** — icon switches to 🐱, time ticks live
-4. **Stop Timer** — icon switches to 🐷, time freezes but keeps today's total
+2. **Left-click** the 🐱/🐷 icon in the menu bar — start/stop the timer
+   - 🐱 = timing, time ticks live
+   - 🐷 = stopped, shows today's total
+3. **Right-click** the icon for the menu:
+   - **Open UI** — stats window: past-30-day & all-time totals, daily study
+     curve, and today's session list (delete any wrong record with the 🗑 button)
+   - **Refresh Data** — reload `history.json`
+   - **Quit ChronoBar**
+4. Closing the lid automatically stops the timer and saves the session
 5. Next day, today's time resets automatically
 
 ## Build
