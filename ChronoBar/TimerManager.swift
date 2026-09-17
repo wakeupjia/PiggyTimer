@@ -17,6 +17,13 @@ class TimerManager: ObservableObject {
         }
     }
 
+    /// Stops the timer if it is currently running (e.g. when the Mac goes to sleep).
+    func stopIfActive() {
+        if isActive {
+            stop()
+        }
+    }
+
     private func start() {
         isActive = true
         startTime = Date()

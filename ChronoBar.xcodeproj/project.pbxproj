@@ -13,6 +13,7 @@
 		A10004 /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004; };
 		A10005 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10005; };
 		A10006 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007; };
+		A10007 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		B10005 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		B10006 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10007 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B10008 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 				B10003 /* DataManager.swift */,
 				B10004 /* TimerManager.swift */,
 				B10005 /* MenuBarView.swift */,
+				B10008 /* StatsView.swift */,
 				B10006 /* Info.plist */,
 			);
 			path = ChronoBar;
@@ -130,6 +133,7 @@
 				A10003 /* DataManager.swift in Sources */,
 				A10004 /* TimerManager.swift in Sources */,
 				A10005 /* MenuBarView.swift in Sources */,
+				A10007 /* StatsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

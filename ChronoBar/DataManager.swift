@@ -47,6 +47,11 @@ class DataManager: ObservableObject {
         persist()
     }
 
+    func delete(_ record: StudyRecord) {
+        records.removeAll { $0.id == record.id }
+        persist()
+    }
+
     func persist() {
         let dir = fileURL.deletingLastPathComponent()
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -82,6 +87,37 @@ class DataManager: ObservableObject {
 
     var allTimeTotal: TimeInterval {
         records.reduce(0) { $0 + $1.duration }
+    }
+
+    var todayRecords: [StudyRecord] {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        return records
+            .filter { cal.isDate($0.start, inSameDayAs: today) }
+            .sorted { $0.start < $1.start }
+    }
+
+    /// Daily totals for the past `days` days (including today), oldest first.
+    /// Days without records are included with 0.
+    func dailyTotals(days: Int) -> [(date: Date, seconds: TimeInterval)] {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        guard let startDay = cal.date(byAdding: .day, value: -(days - 1), to: today) else { return [] }
+
+        var totals: [Date: TimeInterval] = [:]
+        for record in records {
+            let day = cal.startOfDay(for: record.start)
+            guard day >= startDay else { continue }
+            totals[day, default: 0] += record.duration
+        }
+
+        var result: [(date: Date, seconds: TimeInterval)] = []
+        for offset in 0..<days {
+            if let day = cal.date(byAdding: .day, value: offset, to: startDay) {
+                result.append((date: day, seconds: totals[day] ?? 0))
+            }
+        }
+        return result
     }
 }
 

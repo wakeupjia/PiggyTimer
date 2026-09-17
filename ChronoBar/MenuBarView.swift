@@ -22,8 +22,8 @@ struct MenuBarView: View {
 
         Divider()
 
-        Button("Open History (JSON)") {
-            dataManager.openHistoryFile()
+        Button("Open UI") {
+            StatsWindowController.shared.show()
         }
 
         Button("Refresh Data") {

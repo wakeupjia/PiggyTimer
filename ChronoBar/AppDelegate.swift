@@ -24,6 +24,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.updateButton() }
             .store(in: &cancellables)
+
+        NSWorkspace.shared.notificationCenter.addObserver(
+            self,
+            selector: #selector(handleSleep),
+            name: NSWorkspace.willSleepNotification,
+            object: nil
+        )
+    }
+
+    @objc private func handleSleep() {
+        timerManager.stopIfActive()
     }
 
     @objc private func statusBarClicked() {
@@ -43,7 +54,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        menu.addItem(NSMenuItem(title: "Open History (JSON)", action: #selector(openHistory), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Open UI", action: #selector(openUI), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "Refresh Data", action: #selector(refreshData), keyEquivalent: "r"))
 
         menu.addItem(NSMenuItem.separator())
@@ -70,8 +81,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Actions
 
-    @objc private func openHistory() {
-        dataManager.openHistoryFile()
+    @objc private func openUI() {
+        StatsWindowController.shared.show()
     }
 
     @objc private func refreshData() {
