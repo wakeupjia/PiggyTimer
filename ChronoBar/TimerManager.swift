@@ -3,7 +3,7 @@ import Combine
 
 class TimerManager: ObservableObject {
     @Published var isActive = false
-    @Published var elapsedTimeString = "00:00:00"
+    @Published var elapsedTimeString = "00:00"
     @Published var currentSessionElapsed: TimeInterval = 0
 
     private var startTime: Date?
@@ -52,7 +52,7 @@ class TimerManager: ObservableObject {
         isActive = false
         startTime = nil
         currentSessionElapsed = 0
-        elapsedTimeString = "00:00:00"
+        elapsedTimeString = "00:00"
     }
 
     private func tick() {
@@ -65,7 +65,6 @@ class TimerManager: ObservableObject {
     func formatDuration(_ seconds: TimeInterval) -> String {
         let h = Int(seconds) / 3600
         let m = Int(seconds) % 3600 / 60
-        let s = Int(seconds) % 60
-        return String(format: "%02d:%02d:%02d", h, m, s)
+        return String(format: "%02d:%02d", h, m)
     }
 }

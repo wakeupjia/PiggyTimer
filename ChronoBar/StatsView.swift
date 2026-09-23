@@ -36,6 +36,20 @@ struct StatsView: View {
                         .bold()
                 }
                 Spacer()
+                VStack(alignment: .trailing, spacing: 6) {
+                    Picker(selection: themeBinding, label: EmptyView()) {
+                        ForEach(dataManager.themes, id: \.self) { theme in
+                            Text(theme).tag(theme)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .fixedSize()
+
+                    Button("Create a new theme") {
+                        promptCreateTheme()
+                    }
+                    .font(.caption)
+                }
             }
 
             // Chart
@@ -100,6 +114,35 @@ struct StatsView: View {
         }
         .padding(20)
         .frame(minWidth: 480, minHeight: 540)
+    }
+
+    private var themeBinding: Binding<String> {
+        Binding(
+            get: { dataManager.currentTheme },
+            set: { dataManager.switchTheme(to: $0) }
+        )
+    }
+
+    private func promptCreateTheme() {
+        let alert = NSAlert()
+        alert.messageText = "Create a new theme"
+        alert.informativeText = "Study time will be tracked separately under the new theme."
+        let field = NSTextField(frame: NSRect(x: 0, y: 0, width: 240, height: 24))
+        field.placeholderString = "Theme name"
+        alert.accessoryView = field
+        alert.addButton(withTitle: "Create")
+        alert.addButton(withTitle: "Cancel")
+        alert.window.initialFirstResponder = field
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        if let error = dataManager.createTheme(named: field.stringValue) {
+            let errorAlert = NSAlert()
+            errorAlert.messageText = "Could not create theme"
+            errorAlert.informativeText = error
+            errorAlert.alertStyle = .warning
+            errorAlert.addButton(withTitle: "OK")
+            errorAlert.runModal()
+        }
     }
 
     private func formatClock(_ date: Date) -> String {

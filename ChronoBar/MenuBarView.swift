@@ -26,8 +26,19 @@ struct MenuBarView: View {
             StatsWindowController.shared.show()
         }
 
-        Button("Refresh Data") {
-            dataManager.load()
+        Menu("Switch Theme") {
+            ForEach(dataManager.themes, id: \.self) { theme in
+                Button {
+                    dataManager.switchTheme(to: theme)
+                } label: {
+                    HStack {
+                        Text(theme)
+                        if theme == dataManager.currentTheme {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
         }
 
         Divider()
