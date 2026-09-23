@@ -126,7 +126,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func formatTime(_ seconds: TimeInterval) -> String {
         let h = Int(seconds) / 3600
         let m = Int(seconds) % 3600 / 60
-        return String(format: "%02d:%02d", h, m)
+        let s = Int(seconds) % 60
+        return String(format: "%02d:%02d:%02d", h, m, s)
     }
 
     private func formatHM(_ seconds: TimeInterval) -> String {
